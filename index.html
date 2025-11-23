@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优香的数学笔记本</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        .theorem-card {
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+        
+        .theorem-header {
+            cursor: pointer;
+            background: linear-gradient(to right, #f1f5f9, #f8fafc);
+        }
+        
+        .theorem-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .theorem-content.active {
+            max-height: 1000px;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .category-geometry { background-color: #fef9c3; color: #ca8a04; }
+        .category-algebra { background-color: #dbeafe; color: #1e40af; }
+        .category-number-theory { background-color: #dcfce7; color: #166534; }
+        .category-analysis { background-color: #ffeff4; color: #9d174d; }
+        .category-combinatorics { background-color: #ede9fe; color: #4f46e5; }
+        
+        .search-bar {
+            transition: width 0.4s ease;
+        }
+        
+        .logo {
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+            border-radius: 50%; /* 圆形logo */
+        }
+        
+        .subtitle {
+            font-size: 0.875rem;
+            color: #7a8ea9;
+            margin-top: 0.5rem;
+            max-width: 800px;
+        }
+        
+        @media (max-width: 640px) {
+            .subtitle {
+                font-size: 0.875rem;
+            }
+            .logo {
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 3rem 0 1.5rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen p-4 md:p-8">
+        <!-- 顶部区域 - 完全重新设计 -->
+        <div class="max-w-6xl mx-auto flex flex-col items-center mb-8 gap-6">
+            <!-- 居中显示的logo -->
+            <img src="https://youke1.picui.cn/s1/2025/11/15/6918226840772.jpg" 
+                 alt="Yuuka's Mathmatics Notebook Logo" 
+                 class="w-24 h-24 logo sm:w-32 sm:h-32 md:w-40 md:h-40"
+                 id="logo">
+            
+            <!-- 居中显示的标题和副标题 -->
+            <div class="text-center">
+                <h1 class="text-2xl md:text-4xl font-bold text-gray-800">Yuuka's Mathmetics Notebook</h1>
+                <p class="subtitle mt-3">关于人名的翻译，本大作业中的定理中的人名全部是英文名，搜索时请输入英文”</p>
+            </div>
+            
+            <!-- 搜索和筛选区域 - 保持原位置但调整布局 -->
+            <div class="w-full max-w-xl flex flex-wrap gap-3 items-stretch">
+                <!-- 搜索框 -->
+                <div class="flex-grow relative">
+                    <input type="text" 
+                           placeholder="搜索定理..." 
+                           class="search-bar w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                           id="search-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" 
+                         fill="none" 
+                         viewBox="0 0 24 24" 
+                         stroke="currentColor">
+                        <path stroke-linecap="round" 
+                              stroke-linejoin="round" 
+                              stroke-width="2" 
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                
+                <!-- 类别筛选 -->
+                <div class="flex-shrink-0">
+                    <select id="category-filter" 
+                            class="block w-full py-2 px-3 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="all">全部类别</option>
+                        <option value="geometry">几何</option>
+                        <option value="algebra">代数</option>
+                        <option value="number-theory">数论</option>
+                        <option value="analysis">分析</option>
+                        <option value="combinatorics">组合</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 定理列表容器 -->
+        <div class="max-w-6xl mx-auto" id="theorem-container">
+            <!-- 定理卡片将通过JavaScript动态生成 -->
+        </div>
+
+         <footer>
+            <p>© 2025 张逸湘 复旦大学未来信息创新学院 - 深度学习基础大作业 -本站的所有题目数据来源于网站AoPS</p>
+        </footer>
+    </div>
+
+    <script>
+        // 定理数据
+        const theorems = [
+                                          {
+                title: "Abel变换",
+                background: "Abel变换由 Niels Henrik Abel 于1826年在书 Untersuch ungen die Reihe中提出，是离散版本的分部积分，由此可以得到Abel不等式",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69183da55d4d9.png",
+                problems: [
+                    { name: "2013-中国国家队选拔考试-第4题", url: "https://artofproblemsolving.com/community/c6h525027p2969643" },
+                    { name: "2008-中国数学奥林匹克-第3题", url: "https://artofproblemsolving.com/community/c6h379746p2100410" }
+                        ],
+                articles: [
+                    { name: "Abel变换原始论文", url: "https://easylink.cc/z262yh" },
+                    { name: "Abel变换的证明与应用", url: "https://zhuanlan.zhihu.com/p/681929770" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Eisenstein判别法",
+                background: "Eisenstein判别法给出一个整系数多项式在整数环上不可约的充分条件，判别法得名于德国数学家 Ferdinand Gotthold Max Eisenstein,他于1850年发表的论文使得这个结果闻名于世，不过德国数学家 Theodor Schonemann于1846年发表过同样的结果",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691853c90ec18.png",
+                problems: [
+                    { name: "2008-中国国家队选拔考试-第17题", url: "https://artofproblemsolving.com/community/c6h199121p1095025" }
+                        ],
+                articles: [
+                    { name: "Eisenstein原始论文", url: "https://easylink.cc/5t19ua" },
+                    { name: "关于有理系数多项式不可约的Eisenstein判别法", url: "https://zhuanlan.zhihu.com/p/339208387" },
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Aczel不等式",
+                background: "1956年，加拿大数学家Aczel在研究单变量函数方程时提出了这个不等式",
+                content: "该不等式又被称为反向Cauchy不等式",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69185f4447802.png",
+                problems: [
+                    { name: "2020-中国东南地区数学奥林匹克-第12题", url: "https://artofproblemsolving.com/community/c6h2222533p17022613" },
+                    { name: "2017-中国女子数学奥林匹克-第3题", url:"https://artofproblemsolving.com/community/c6h1495340p8796142"},
+                    { name: "2004-美国国家队选拔考试-第1题", url:"https://artofproblemsolving.com/community/c6h79775p456566"}
+                        ],
+                articles: [
+                    { name: "Aczel原始论文", url: "https://easylink.cc/r2k4ah" },
+                    { name: "Aczel不等式证明个人想法及一些例子", url: "https://zhuanlan.zhihu.com/p/367552984" },
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Ore定理",
+                background: "Ore定理由挪威数学家 Ore 于1960年在论文 Note on Hamilton Circuits中发表，给出了一个图是 Hamiton 圈的充分条件.Gabriel Andrew Dirac 于1952年在论文 Some Theorems on Abstract Graphs 也给出过一个充分条件，Ore定理是它的推广",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69186504acc91.png",
+                problems: [
+                    { name: "2018-保加利亚数学奥林匹克-第6题", url: "https://artofproblemsolving.com/community/c6h1627590p10207214" }
+                        ],
+                articles: [
+                    { name: "Ore原始论文", url: "https://easylink.cc/b1zf9d" },
+                    { name: "Dirac原始论文", url: "https://easylink.cc/ijo2gt" },
+                    {name: "Ore定理的中文数学wiki介绍",url:"https://math.fandom.com/zh/wiki/Ore_%E5%AE%9A%E7%90%86"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Beatty定理",
+                background: "Beatty定理由 Samuel Beatty 于1926年投给美国数学月刊作为问题3173，但在 Lord Rayleigh 于1894年出版的书 The Theory of Sound 中已经出现，后有多次重复发现，故而这一定理也被称作 Beatty-Rayleigh 定理",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691868ea3346c.png",
+                problems: [
+                    { name: "2019-国际数学奥林匹克预选题数论-第6题", url: "https://artofproblemsolving.com/community/c6h2279051p17829382" }
+                        ],
+                articles: [
+                    { name: "Beatty定理解答原始论文", url: "https://easylink.cc/qadfge" },
+                    { name: "定理的证明", url: "https://toby-fish.github.io/2020/11/07/%E6%95%B0%E5%AD%A6-%E8%B4%9D%E8%92%82%E5%AE%9A%E7%90%86/" },
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Berge定理",
+                background: "Berge定理给出一个匹配是最大匹配的充要条件，有法国数学家 Claude Berge 于 1957 年在论文 Two Theorems in Graph Theory 中提出",
+                content: "设图M是图G的一个匹配，G的一个M-交错路是边交替属于M和不属于M的路.进一步，如果一个M-交错路的起点和重点均不被M覆盖，则称该路是一个M-增广路",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691871b3e6393.png",
+                problems: [
+                    { name: "[信息学竞赛]洛谷P1129[ZJOI2007]矩阵游戏", url: "https://www.luogu.com.cn/problem/P1129" }
+                        ],
+                articles: [
+                    { name: "Beatty定理解答原始论文", url: "https://easylink.cc/qadfge" },
+                    { name: "二部图的匹配问题", url: "https://zobinhuang.github.io/sec_learning/Algorithm/Graph_Theory_16_Match_of_Bipartite/#1.4%20Berge%20%E5%AE%9A%E7%90%86" },
+                    { name: "匈牙利算法",url: "https://zobinhuang.github.io/sec_learning/Algorithm/Graph_Theory_16_Match_of_Bipartite/#1.4%20Berge%20%E5%AE%9A%E7%90%86"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Bertrand假设",
+                background: "Bertrand假设由法国数学家 Joseph Louis Francius Bertrand 于 1845年提出并验证了n较小的清醒.1850年，俄罗斯数学家Chebyshev在论文Memoire sur les nombres premiers中第一个给出证明，因此Bertrand假设也被称为Chebyshev定理.1919年，印度天才数学家Srinivasa Ramanujan在论文 A Proof of Bertrand's Postulate 中给出第一个初等证明.1932年，19岁的天才数学家Erdos在论文 Beweis eines Satzes von Tschebyschef 中改进了证明，这是他的第一篇论文",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691909ed48f93.png",
+                problems: [
+                    { name: "2024-美国数学奥林匹克-第1题", url: "https://artofproblemsolving.com/community/c5h3281035p30216459" },
+                    { name: "2017-罗马尼亚大师杯-第2题", url: "https://artofproblemsolving.com/community/c6h1389628p7743010" },
+                    { name: "2020-国际数学奥林匹克数论预选题-第6题", url: "https://artofproblemsolving.com/community/c6h2625861p22698064" }
+                        ],
+                articles: [
+                    { name: "Chebyshev原始论文", url: "https://easylink.cc/rho7fm" },
+                    { name: "Erdos的初等证明", url: "https://zhuanlan.zhihu.com/p/397365537" },
+                    { name: "解析数论的经典证明",url: "https://andychen2012.blog.uoj.ac/blog/9022"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "波朗杰·藤下定理",
+                background: "波朗杰·藤下定理出现在矢野健太郎的《几何中的著名定理》第7.3节，但这个定理几乎只在中文互联网上出现，且被一些别有用心的教育机构编入“中考常考的几何定理”中",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/6919485522ca1.png",
+                problems: [
+                    
+                        ],
+                articles: [
+                    { name: "波朗杰·藤下定理的证明和有用的推论", url: "https://zhuanlan.zhihu.com/p/402363209" },
+                    { name: "复数法解几何题", url: "https://zhuanlan.zhihu.com/p/557407094" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Bollobas定理",
+                background: "Bollobas定理由 Bela Bollobas 于1965年在论文 On Generalized Graphs为解决一个图论问题而提出.这就是Sperner定理的推广",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691913dd69756.png",
+                problems: [
+                    { name: "2021-第38期新星征解题-第4题", url: "https://download.wezhan.cn/contents/sitefiles2057/10287724/files/539079..pdf?response-content-disposition=inline%3Bfilename%3D%25e6%2596%25b0%25e6%2598%259f%25e9%2597%25ae%25e9%25a2%2598%25e5%25be%2581%25e8%25a7%25a3%25e7%25ac%25ac%25e4%25b8%2589%25e5%258d%2581%25e5%2585%25ab%25e6%259c%259f%25e8%25a7%25a3%25e7%25ad%2594%282021.05%29.pdf&auth_key=1763251384-6fb9df040d0243ce903eadeb3ee8156f-0-86557c0d1b781352c3394e54201a1896" }
+                        ],
+                articles: [
+                    { name: "Bollobas原始论文", url: "https://easylink.cc/vfq3o4" },
+                    { name: "Bollobas定理的证明和相关定理", url: "https://zhuanlan.zhihu.com/p/584076656" }
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Bolzano-Weierstrass列紧性定理(致密性定理)",
+                background: "Bolzano-Weierstrass列紧性定理由波西米亚数学家 Bernard Bolzano 首次提出并公开证明，他的证明包含在著作《函数论》中，但生前并未发表，直到1930才公开.1860年，德国数学家 Karl Weierstrass 重新发现并证明了该定理.该定理揭示了欧式空间上的列紧性",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691916c861d14.png",
+                problems: [
+                    { name: "2024-华东师范大学数学分析I期末考试-第三(8)题", url: "https://zhuanlan.zhihu.com/p/21385842676" },
+                    { name: "2024-浙江大学数学分析I期中考试-第五题",url: "https://zhuanlan.zhihu.com/p/4660980110"},
+                    { name: "2024-南开大学数学分析I期末考试-第四题",url:"https://zhuanlan.zhihu.com/p/16053030711"}
+                        ],
+                articles: [
+                    { name: "Bolzano-Weierstrass列紧性定理(致密性定理)的证明", url: "https://zhuanlan.zhihu.com/p/712509473" },
+                    { name: "与确界原理的等价性", url: "https://zhuanlan.zhihu.com/p/538415091" }
+                        ],
+                category: "analysis"
+            },
+            {
+                title: "Bonferroni不等式",
+                background: "Bonferroni不等式推广了概率论中的Boole不等式，给出了容斥原理的不等式形式.由意大利数学家 Carlo Emilio Bonferroni 于1936年在论文 Teoria Statistica Della Classi e Ca lcolo Delle Probabilita中提出",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69191cba4ddf0.png",
+                problems: [
+                    { name: "1989-国际数学奥林匹克-第6题", url: "https://artofproblemsolving.com/community/c6h62178p372274" }
+                        ],
+                articles: [
+                    { name: "Bonferroni不等式的证明", url: "https://zhuanlan.zhihu.com/p/649714259" },
+                    { name: "Bonferroni不等式在概率论中的应用", url: "https://www.researchgate.net/publication/373452975_Bonferroni_budengshijigailuying_yongBonferroni_inequality_and_its_probability_application" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Bernoulli不等式",
+                background: "Bernoulli不等式由瑞士数学家 Jacob Bernoulli 于1689年在论文 Positions Arithmeticae de Seriebus Infinitis Earumque Summa Finita 中提出.不过根据 Joseph E.Hofmann 于1963年指出的，1668年在 Mesolabum 一书中的第四章已经提出过这一不等式",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69191f2b7031a.png",
+                problems: [
+                    { name: "2017-国际数学奥林匹克代数预选题-第1题", url: "https://artofproblemsolving.com/community/c6h1671272p10632289" },
+                    { name: "2016-罗马尼亚大师杯-第4题", url: "https://artofproblemsolving.com/community/c6h1204702p5942450"},
+                    { name: "2017-中国西部数学奥林匹克-第2题",url:"https://artofproblemsolving.com/community/c6h1495576p8799083"}
+                        ],
+                articles: [
+                    { name: "Bernoulli不等式的证明", url: "https://easylink.cc/iy3xa0" },
+                    { name: "Bernoulli不等式n元形式", url: "https://zhuanlan.zhihu.com/p/33304783" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Brianchon定理",
+                background: "Brianchon定理由法国数学家 Charles-Julian Brianchon 于1806年在论文 Memoire sur les surfaces courbes du second degre 中提出.这是他发表的第一篇论文",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69192d64a063a.png",
+                problems: [
+                    { name: "2021-土耳其国家队选拔考试-第9题", url: "https://artofproblemsolving.com/community/c6h3279869p30201261" },
+                    { name: "2017-国际数学奥林匹克几何预选题-第1题", url: "https://artofproblemsolving.com/community/c6h1671264p10632265"},
+                    { name: "2012-国际数学奥林匹克几何预选题-第7题",url:"https://artofproblemsolving.com/community/c6h546183p3160591"}
+                        ],
+                articles: [
+                    { name: "Brianchon定理的圆锥曲线形式", url: "https://www.zhihu.com/question/579399803" },
+                    { name: "Pascal定理的对偶定理——Brianchon定理", url: "https://zhuanlan.zhihu.com/p/62300472" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Brooks定理",
+                background: "Brooks定理是关于图染色的经典结果，由R.L.Brooks于1941年在论文 On Colouring the Nodes of a Network中发表",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691931a1d3154.png",
+                problems: [
+                    { name: "2017-北京大学数学夏令营-第4题", url: "https://www.sohu.com/a/164926834_651844" },
+                    {name:"[信息学竞赛]洛谷P2819 图的m着色问题" ,url:"https://www.luogu.com.cn/problem/P2819"}
+                        ],
+                articles: [
+                    { name: "图的着色问题", url: "https://oi-wiki.org/graph/color/" },
+                    { name: "图的着色算法", url: "https://oi-wiki.org/graph/color/#brooks-%E5%AE%9A%E7%90%86" }
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Brocard定理",
+                background: "该定理来源于法国数学家 Henri Brocard",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69194974c89fd.png",
+                problems: [
+                    { name: "2024-国际数学奥林匹克几何预选题-第6题", url: "https://artofproblemsolving.com/community/c6h3610439p35340907" },
+                    {name:"2019-上海新星数学奥林匹克春季赛-第5题" ,url:"https://download.wezhan.cn/contents/sitefiles2057/10287724/files/538959..pdf?response-content-disposition=inline%3Bfilename%3D2019%25e6%2598%25a5%25e5%25ad%25a3%25e4%25b8%258a%25e6%25b5%25b7%25e6%2596%25b0%25e6%2598%259f%25e6%2595%25b0%25e5%25ad%25a6%25e5%25a5%25a5%25e6%259e%2597%25e5%258c%25b9%25e5%2585%258b%28NSMO%29%25e8%25af%2595%25e9%25a2%2598%25e8%25a7%25a3%25e6%259e%2590-%25e5%2590%25b4%25e5%25b0%2589%25e8%25bf%259f%25e7%25bd%2597%25e6%258c%25af%25e5%258d%258e%25e9%259f%25a9%25e6%2596%25b0%25e6%25b7%25bc%25e5%2586%25b7%25e5%25b2%2597%25e6%259d%25be.pdf&auth_key=1763265392-bb470979a6c74b97a2af2ef1a6b78b8b-0-27c4064dc0385ee139dbc52ac5e3cdb7"},
+                    { name:"2010-全国高中数学联合竞赛-加试第1题·",ur:"https://artofproblemsolving.com/community/c6h463313p2597601"}
+                        ],
+                articles: [
+                    { name: "完全四边形", url: "https://zhuanlan.zhihu.com/p/601604450" },
+                    { name: "Brocard定理的证明", url: "https://www.zhihu.com/question/300455892/answer/1125754321" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Carleman不等式",
+                background: "Carleman不等式由瑞典数学家 Torsten Carleman 于1923年在论文 Sur les fonctions quasi-analytiques中提出",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69194dfa59819.png",
+                problems: [
+                    { name: "2015-中国国家队选拔考试-第8题", url: "https://artofproblemsolving.com/community/c6h1064458p4619006" }
+                        ],
+                articles: [
+                    { name: "Carleman不等式的证明", url: "https://zhuanlan.zhihu.com/p/389442229" },
+                    { name: "积分形式", url: "https://zhuanlan.zhihu.com/p/146394663" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Carlson不等式",
+                background: "Carlson不等式由瑞典数学家 Fritz David Carlson 于 1934年在论文 Une inegalite中提出. Carlson 的原证明用的是解析函数的方法. G.H.Hardy 在1936年在论文 A Note on Two Inequalities中给出了两种相对初等的做法，一种用来Cauchy不等式，一种用来Fourier级数",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b00d960363.png",
+                problems: [
+                    
+                        ],
+                articles: [
+                    { name: "Hardy原始论文", url: "https://easylink.cc/hvitth" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Caro-Wei定理",
+                background: "Caro-Wei定理给出一个图的最大独立集大小的一个下届，由Yair Caro 于1979年在报告New Results on the independ ence number 以及 V.K.Wei于1981年在技术北方路A lower bound on the stability number of a simple graph中分别独立提出",
+                content: "图G中若干互不相邻的顶点组成的集合称为G的独立集，独立集合的元素个数记作α(G)",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b0efcad702.png",
+                problems: [
+                    { name:"2012-国际数学奥林匹克组合预选题-第7题",url : "https://artofproblemsolving.com/community/c6h546174p3160574"},
+                    { name:"[信息学竞赛]洛谷P12371[模板]最大团/最大独立集",url:"https://www.luogu.com.cn/problem/P12371"}
+                        ],
+                articles: [
+                    { name: "Caro-Wei定理的推广(arXiv预印本仅作参考)", url: "https://arxiv.org/abs/2403.17568" },
+                    { name:"上海交通大学约翰-霍普克罗夫特计算机科学中心的讲稿",url :"https://jhc.sjtu.edu.cn/~kuanyang/teaching/CS3334/notes/lec05.pdf"},
+                    {name:"随机图论",url:"https://tantaiqianer.github.io/mathematics/graph-theory/random-graph/"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Cayley-Hamilton定理",
+                background: "Cayley-Hamilton定理由爱尔兰数学家William Rowan Hamilton和英国数学家Arthur Cayley共同提出，它说明任何一个方阵适合于于它的特征方程.Hamilton在著作 Lectures on Quaternions中设计了线性变换满足其特征多项式的问题，而Cayley则在18581年的一篇文章中对n=3验证了这个定理",
+                content: "拓扑上看就是可对角化方阵在所有方阵中稠密",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b1356576e4.png",
+                problems: [
+                    { name:"复旦大学高等代数每周一题[问题2023S06]",url : "https://www.cnblogs.com/torsor/p/17154080.html"},
+                    { name:"[信息学竞赛]洛谷P10775[BZOJ4162]shlw loves matrix II",url:"https://www.luogu.com.cn/problem/P10775"}
+                        ],
+                articles: [
+                    { name: "Cayley-Hamilton定理的证明", url: "https://zhuanlan.zhihu.com/p/7745376929" },
+                    { name:"在信息学中的应用",url :"https://oiwiki.org/math/linear-algebra/char-poly/"}
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Chevalley-Warning定理",
+                background: "1935年，Emil Artin猜想对于有限域上的多元多项式组的零点集合，可能会有好的结论，他把这个问题交给自己的学生Ewald Warning去做.这个时候 Claude Chevalley 来到 Gottingen 访问，随后在论文 Demonstration d'une hypothese de M.Artin中证明了这个定理.之后在同一年，Warning在论文 Bemerkung zur vorstehenden Arbeit von Herm Chevalley中改进了定理的结果",
+                content: "它告诉我们如果一个方程未知数足够多，那么只要平凡解，就一定有非平凡解，这个推论在中学数学竞赛中更加有用",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b18b8d715a.png",
+                problems: [
+                    { name:"2003-国际数学奥林匹克数论预选题-第8题",url : "https://artofproblemsolving.com/community/c6h17633p119994"}
+                        ],
+                articles: [
+                    { name: "Warning原始论文", url: "https://easylink.cc/7gm0n0" },
+                    { name:"Chevalley原始论文",url :"https://easylink.cc/2ee3ub"},
+                    { name:"有限域理论上的应用",url:"https://zhuanlan.zhihu.com/p/623295706"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Cohn判别法",
+                background: "Cohn判别法得名来源于德国数学家Arthur Cohn，最早见于Polya和Szego于1925年出版的明珠 Problems and theorems in analysis第二卷问题128.1981年，John Brilliant,Michael Filaseta和Anderw Odlyzko在论文 On an Irreducibility Theorem of A.Cohn中将底数推广位一般的b",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b1dc1c1383.png",
+                problems: [
+                    { name:"2010-中国东南地区数学奥林匹克-第1题",url : "https://artofproblemsolving.com/community/c6h375152p2070435"},
+                        ],
+                articles: [
+                    { name: "Brillhart-Filaseta-Odlyzko原始论文", url: "https://easylink.cc/5dy8io" },
+                    { name:"Cohn判别法的普适性(但不适合作为计算机算法)",url :"hhttps://mathworld.wolfram.com/Berlekamp-ZassenhausAlgorithm.html"}
+                        ],
+                category: "number-theory"
+            },
+                        {
+                title: "Descartes符号法则",
+                background: "Descartes符号法则是笛卡尔在1637年在 La Geometrie 一书中未加证明的给出的，牛顿于1707年重新提出，但也没有证明.已知最早的证明书hi有法国数学家 Jean-Paul de Gua de Malves 于1740年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/691c74033203f7be0013c3a2.png",
+                problems: [
+                    { name:"2021=北京大学数学科学金秋营-第4题",url : "https://artofproblemsolving.com/community/c6h2701383p23464280"}
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://zhuanlan.zhihu.com/p/161577971" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Descartes圆定理",
+                background: "Descartes符号法则是笛卡尔在1643年在写给 Bohemia 的 Elizabeth 公主的信中指出，但没有完整的证明。之后这个定理被多次发现，Jakob Stener于1826年第一个给出了完整的证明，Thorold Gosset于1937年推广到了高维的情形",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/691d41023203f7be0015c501.png",
+                problems: [
+                    { name:"1995-中国数学奥林匹克-第4题",url : "https://artofproblemsolving.com/community/c6h554096p3219715"}
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://zhuanlan.zhihu.com/p/105819963" },
+                    { name: "笛卡尔定理与一类多圆相切问题",url:"https://easylink.cc/b1z86d"}
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Dirichlet逼近",
+                background: "Dirichlet逼近有德国数学家Dirichlet于1842年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692213733203f7be002239bc.png",
+                problems: [
+                    { name:"2007-中国西部数学奥林匹克-第4题",url : "https://artofproblemsolving.com/community/c6h175290p968468"}
+                        ],
+                articles: [
+                    { name: "无理数的有理数逼近", url: "https://zhuanlan.zhihu.com/p/537341163" },
+                    { name: "和Zeta函数的零点间距的关系",url:"https://zhuanlan.zhihu.com/p/367101494"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Dirichlet定理",
+                background: "Dirichlet定理的特殊情形(a=1)由Euler于1775年证明，更一般的情况由 Legendre 在证明二次互反率的时候提出，由德国数学家 Peter Gustav Lejeune Dirichlet 于1837年首次证明，但第一个初等证明是Selberg给出的",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692215c63203f7be00223c35.png",
+                problems: [
+                    { name:"2023-全国高中数学联合竞赛-加试第二题",url : "https://artofproblemsolving.com/community/c6h3152921p28644021"},
+                    { name:"2019-罗马尼亚大师杯-第6题",url : "https://artofproblemsolving.com/community/c6h1790450p11841786"}
+                        ],
+                articles: [
+                    { name: "利用示性函数-Dirichlet的证明", url: "https://zhuanlan.zhihu.com/p/57379991" }
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Desargue定理",
+                background: "Desargue定理是摄影几何中的重要定理",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692218423203f7be00223eef.png",
+                problems: [
+                    { name:"2023-第11届学而思数学竞赛-加试第一题",url : "https://artofproblemsolving.com/community/c6h3014154p27078254"},
+                    { name:"2016-罗马尼亚大师杯-第1题",url : "https://artofproblemsolving.com/community/c6h1204356p5938850"}
+                        ],
+                articles: [
+                    { name: "笛沙格定理的多种证明方法", url: "https://zhuanlan.zhihu.com/p/1922056073059242030" },
+                    { name: "帕斯卡几何",url:"https://www.cnblogs.com/edward-bian/p/15832559.html"}
+                        ],
+                category:"geometry"
+            },
+            {
+                title: "Droz-Farny定理",
+                background: "Droz-Farny定理由瑞士数学家 Arnold Droz-Farny 于1899年发表在 The Educational Time 问题14111，但没有给出证明，第一个几何证明由 Jean-Loui Ayme 于2004年发表在杂志 Forum Geometricorum",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221a7f3203f7be00224156.png",
+                problems: [
+                    { name:"2015-伊朗几何奥林匹克高级组-第3题",url : "https://artofproblemsolving.com/community/c6h3014154p27078254"},
+                    { name:"2016-罗马尼亚大师杯-第1题",url : "https://artofproblemsolving.com/community/c6h1204356p5938850"}
+                        ],
+                articles: [
+                    { name: "Droz-Farny Theorem", url: "https://mathworld.wolfram.com/Droz-FarnyTheorem.html" },
+                    { name: "一片来自美国竞赛教练Titu的小文章",url:"https://geometry.ru/articles/DFdemystified.pdf"}
+                        ],
+                category:"geometry"
+            },
+            {
+                title: "Hermite恒等式",
+                background: "Hermite恒等式是关于高斯函数的一个恒等式，有法国数学家 Hermite 于1884年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221cc63203f7be002243d1.png",
+                problems: [
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://www.zhihu.com/question/66001660" }
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Gauss二次互反率",
+                background: "Gauss二次互反率由 Euler 于1783年提出，由Gauss于1798年第一个给出完整的证明，这个定理至今已经有超过两百种证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221e053203f7be0022452c.png",
+                problems: [
+                    {name:"2010-美国国家队选拔考试-第9题",url:"https://artofproblemsolving.com/community/c6h358783p1960094"}
+                        ],
+                articles: [
+                    { name: "模p球面点数和高斯和", url: "https://zhuanlan.zhihu.com/p/564529711" },
+                    { name:"西北大学学报-关于高斯和的一个新的恒等式", url:"https://xdxbzk.nwu.edu.cn/zh/article/doi/10.16152/j.cnki.xdxbzr.2023-03-012/"},
+                    { name:"二次互反率的一系列证明",uel:"https://zhuanlan.zhihu.com/p/661226930"}
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Erdos-Gallai定理",
+                background: "Erdos-Gallai定理给出了简单如的度序列的判定方法，由Erdos和Gallai于1960年发表",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692220bb3203f7be0022481c.png",
+                problems: [
+                    {name:"2021-北京大学数学科学金秋营-第8题",url:"https://artofproblemsolving.com/community/c6h2701441p23464574"},
+                    {name:"[信息学竞赛]POJ1695 Frogs' Neighborhood",url :"https://cloud.tencent.com/developer/article/1087330"}
+                        ],
+                articles: [
+                    { name: "Erdos-Gallai定理与Havel算法", url: "https://blog.nowcoder.net/n/190e37e3bb7f4aba83795e32a7f5a446" },
+                    { name:"图的度数序列相关定理", url:"https://www.luogu.com.cn/article/650j3djq"}
+                        ],
+                category:"combinatorics"
+            },
+            {
+                title: "Erdos-Ginzbueg-Ziv定理",
+                background: "Erdos-Ginzbueg-Ziv定理由 P.Erdos,A.Ginzbueg,A.Ziv 于1961年在论文 Theorm in the Additive Number theory联合给出证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/6922a2cc3203f7be0023a8df.png",
+                problems: [
+                    {name:"2021-第43期数学新星征解答-第4题",url:"https://download.wezhan.cn/contents/sitefiles2057/10287724/files/539136..pdf?response-content-disposition=inline%3Bfilename%3D%25e6%2595%25b0%25e5%25ad%25a6%25e6%2596%25b0%25e6%2598%259f%25e9%2597%25ae%25e9%25a2%2598%25e5%25be%2581%25e8%25a7%25a3%25e7%25ac%25ac%25e5%259b%259b%25e5%258d%2581%25e4%25b8%2589%25e6%259c%259f%25e8%25a7%25a3%25e7%25ad%2594%282022.04%29.pdf&auth_key=1763877816-7f60e677c89d48ec90464afa7b0e6e2b-0-6bdd21e6b82d10e08fe718d884207b6a"},
+                    {name:"2022-中国国家队选拔考试-第2题",url :"https://artofproblemsolving.com/community/c6h2808541p24771605"}
+                        ],
+                articles: [
+                    { name: "Erdos-Ginzburg-Ziv原始论文.pdf", url: "https://easylink.cc/du3tf5" },
+                    { name:"定理的证明与注记", url:"https://www.bananaspace.org/wiki/Erd%C5%91s%E2%80%93Ginzburg%E2%80%93Ziv_%E5%AE%9A%E7%90%86"},
+                    { name:"一些其他的证明",url:"https://zhuanlan.zhihu.com/p/501183534"},
+                    { name:"南京大学数学科学学院的小讲稿",url:"http://maths.nju.edu.cn/~zwsun/40z.pdf"}
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Erdos-Ko-Rado定理",
+                background: "Erdos-Ko-Rado定理是极值组合的一个中心结果，它给出了一个香蕉r-族的最大可能基数，由Erdos，Rado，柯召于1961年提出，在1972年 Gyula O.H.Katona简化了证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/6922a8d53203f7be0023adcc.png",
+                problems: [
+                    {name:"2021-第43期数学新星征解答-第4题",url:"https://artofproblemsolving.com/community/c6h3499858p33997551"},
+                    {name:"2018-伊朗国家队选拔考试-第17题",url :"https://artofproblemsolving.com/community/c6h1629935p10229072"}
+                        ],
+                articles: [
+                    { name: "证明", url: "https://zhuanlan.zhihu.com/p/364788056" }
+                        ],
+                category:"number-theory"
+            }
+        ];
+
+        // 类别标签映射
+        const categoryTags = {
+            geometry: "几何",
+            algebra: "代数",
+            "number-theory": "数论",
+            analysis: "分析",
+            combinatorics: "组合"
+        };
+
+        // 类别样式映射
+        const categoryStyles = {
+            geometry: "category-geometry",
+            algebra: "category-algebra",
+            "number-theory": "category-number-theory",
+            analysis: "category-analysis",
+            combinatorics: "category-combinatorics"
+        };
+
+        // 渲染定理卡片
+        function renderTheorems() {
+            const container = document.getElementById('theorem-container');
+            container.innerHTML = '';
+            
+            theorems.forEach(theorem => {
+                const card = document.createElement('div');
+                card.className = 'theorem-card mb-4 overflow-hidden';
+                card.setAttribute('data-category', theorem.category); // 存储类别信息
+                
+                // 类别标签
+                const categoryLabel = `
+                    <span class="category-tag ${categoryStyles[theorem.category]}">
+                        ${categoryTags[theorem.category]}
+                    </span>
+                `;
+                
+                card.innerHTML = `
+                    <div class="theorem-header p-4 flex justify-between items-center" 
+                         onclick="toggleCard(this)">
+                        <h2 class="text-xl font-bold">${theorem.title}${categoryLabel}</h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="h-5 w-5 text-gray-500" 
+                             fill="none" 
+                             viewBox="0 0 24 24" 
+                             stroke="currentColor">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    
+                    <div class="theorem-content">
+                        <div class="p-6 bg-gray-50 border-t border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- 左栏 -->
+                                <div>
+                                    <!-- 定理背景 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-blue-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M9 12h6m-6 4h6m2-8h3a2 2 0 012 2v5.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h3" />
+                                            </svg>
+                                            定理背景
+                                        </h3>
+                                        <p class="text-gray-700">${theorem.background}</p>
+                                    </div>
+                                    
+                                    <!-- 定理内容 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-green-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M14 10l-2 1m0 0l-2-1m2 1v8M6 10l2 1m0 0l2-1m-2 1v8M2 10l2 1m0 0l2-1m-2 1v8" />
+                                            </svg>
+                                            定理内容
+                                        </h3>
+                                        <div class="bg-white p-4 rounded-lg ">
+                                            <div class="latex-display">${theorem.content}</div>
+                                            <img src="${theorem.contentImage}" 
+                                                 alt="${theorem.title}内容" 
+                                                 class="mt-4 w-full h-auto rounded-md border border-gray-200">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 右栏 -->
+                                <div>
+                                    <!-- 相关题目 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-purple-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M9 5h6m-6 4h6m2 8h3a2 2 0 012 2v5.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h3" />
+                                            </svg>
+                                            相关题目
+                                        </h3>
+                                        <div class="space-y-2">
+                                            ${theorem.problems.map(problem => `
+                                                <a href="${problem.url}" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer"
+                                                   class="flex items-center text-blue-600 hover:text-blue-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                                         class="h-4 w-4 mr-2" 
+                                                         fill="none" 
+                                                         viewBox="0 0 24 24" 
+                                                         stroke="currentColor">
+                                                        <path stroke-linecap="round" 
+                                                              stroke-linejoin="round" 
+                                                              stroke-width="2" 
+                                                              d="M13.828 13.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    ${problem.name}
+                                                </a>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 相关文章 -->
+                                    <div>
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-pink-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
+                                            相关文章与信息
+                                        </h3>
+                                        <div class="space-y-2">
+                                            ${theorem.articles.map(article => `
+                                                <a href="${article.url}" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer"
+                                                   class="flex items-center text-purple-600 hover:text-purple-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                                         class="h-4 w-4 mr-2" 
+                                                         fill="none" 
+                                                         viewBox="0 0 24 24" 
+                                                         stroke="currentColor">
+                                                        <path stroke-linecap="round" 
+                                                              stroke-linejoin="round" 
+                                                              stroke-width="2" 
+                                                              d="M13.828 13.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    ${article.name}
+                                                </a>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 切换卡片展开/折叠状态
+        function toggleCard(header) {
+            const content = header.nextElementSibling;
+            const isExpanded = content.classList.contains('active');
+            
+           /* // 关闭其他卡片
+            document.querySelectorAll('.theorem-content').forEach(el => {
+                if (el !== content && el.classList.contains('active')) {
+                    el.classList.remove('active');
+                    el.previousElementSibling.querySelector('svg').setAttribute('d', 'M19 9l-7 7-7-7');
+                }
+            });*/
+            
+            // 切换当前卡片状态
+            content.classList.toggle('active', !isExpanded);
+            const svg = header.querySelector('svg');
+            if (isExpanded) {
+                svg.setAttribute('d', 'M19 9l-7 7-7-7');
+            } else {
+                svg.setAttribute('d', 'M5 12l7-7 7 7');
+            }
+        }
+
+        // 搜索和筛选功能
+        function filterTheorems() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value;
+            const cards = document.querySelectorAll('.theorem-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.theorem-header h2').textContent.toLowerCase();
+                const cardCategory = card.dataset.category; // 直接从data属性获取类别
+                
+                const matchesSearch = title.includes(searchTerm);
+                const matchesCategory = (category === 'all' || cardCategory === category);
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTheorems();
+            
+            // 添加搜索事件监听
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterTheorems);
+            
+            // 添加类别筛选事件监听
+            const categoryFilter = document.getElementById('category-filter');
+            categoryFilter.addEventListener('change', filterTheorems);
+            
+            // 初始化logo
+            const logo = document.getElementById('logo');
+            logo.onload = function() {
+                // 可以在这里添加logo加载完成后的处理
+            };
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优香的数学笔记本</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        .theorem-card {
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+        
+        .theorem-header {
+            cursor: pointer;
+            background: linear-gradient(to right, #f1f5f9, #f8fafc);
+        }
+        
+        .theorem-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .theorem-content.active {
+            max-height: 1000px;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .category-geometry { background-color: #fef9c3; color: #ca8a04; }
+        .category-algebra { background-color: #dbeafe; color: #1e40af; }
+        .category-number-theory { background-color: #dcfce7; color: #166534; }
+        .category-analysis { background-color: #ffeff4; color: #9d174d; }
+        .category-combinatorics { background-color: #ede9fe; color: #4f46e5; }
+        
+        .search-bar {
+            transition: width 0.4s ease;
+        }
+        
+        .logo {
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+            border-radius: 50%; /* 圆形logo */
+        }
+        
+        .subtitle {
+            font-size: 0.875rem;
+            color: #7a8ea9;
+            margin-top: 0.5rem;
+            max-width: 800px;
+        }
+        
+        @media (max-width: 640px) {
+            .subtitle {
+                font-size: 0.875rem;
+            }
+            .logo {
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 3rem 0 1.5rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen p-4 md:p-8">
+        <!-- 顶部区域 - 完全重新设计 -->
+        <div class="max-w-6xl mx-auto flex flex-col items-center mb-8 gap-6">
+            <!-- 居中显示的logo -->
+            <img src="https://youke1.picui.cn/s1/2025/11/15/6918226840772.jpg" 
+                 alt="Yuuka's Mathmatics Notebook Logo" 
+                 class="w-24 h-24 logo sm:w-32 sm:h-32 md:w-40 md:h-40"
+                 id="logo">
+            
+            <!-- 居中显示的标题和副标题 -->
+            <div class="text-center">
+                <h1 class="text-2xl md:text-4xl font-bold text-gray-800">Yuuka's Mathmetics Notebook</h1>
+                <p class="subtitle mt-3">关于人名的翻译，本大作业中的定理中的人名全部是英文名，搜索时请输入英文”</p>
+            </div>
+            
+            <!-- 搜索和筛选区域 - 保持原位置但调整布局 -->
+            <div class="w-full max-w-xl flex flex-wrap gap-3 items-stretch">
+                <!-- 搜索框 -->
+                <div class="flex-grow relative">
+                    <input type="text" 
+                           placeholder="搜索定理..." 
+                           class="search-bar w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                           id="search-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" 
+                         fill="none" 
+                         viewBox="0 0 24 24" 
+                         stroke="currentColor">
+                        <path stroke-linecap="round" 
+                              stroke-linejoin="round" 
+                              stroke-width="2" 
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                
+                <!-- 类别筛选 -->
+                <div class="flex-shrink-0">
+                    <select id="category-filter" 
+                            class="block w-full py-2 px-3 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="all">全部类别</option>
+                        <option value="geometry">几何</option>
+                        <option value="algebra">代数</option>
+                        <option value="number-theory">数论</option>
+                        <option value="analysis">分析</option>
+                        <option value="combinatorics">组合</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 定理列表容器 -->
+        <div class="max-w-6xl mx-auto" id="theorem-container">
+            <!-- 定理卡片将通过JavaScript动态生成 -->
+        </div>
+
+         <footer>
+            <p>© 2025 张逸湘 复旦大学未来信息创新学院 - 深度学习基础大作业 -本站的所有题目数据来源于网站AoPS</p>
+        </footer>
+    </div>
+
+    <script>
+        // 定理数据
+        const theorems = [
+                                          {
+                title: "Abel变换",
+                background: "Abel变换由 Niels Henrik Abel 于1826年在书 Untersuch ungen die Reihe中提出，是离散版本的分部积分，由此可以得到Abel不等式",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69183da55d4d9.png",
+                problems: [
+                    { name: "2013-中国国家队选拔考试-第4题", url: "https://artofproblemsolving.com/community/c6h525027p2969643" },
+                    { name: "2008-中国数学奥林匹克-第3题", url: "https://artofproblemsolving.com/community/c6h379746p2100410" }
+                        ],
+                articles: [
+                    { name: "Abel变换原始论文", url: "https://easylink.cc/z262yh" },
+                    { name: "Abel变换的证明与应用", url: "https://zhuanlan.zhihu.com/p/681929770" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Eisenstein判别法",
+                background: "Eisenstein判别法给出一个整系数多项式在整数环上不可约的充分条件，判别法得名于德国数学家 Ferdinand Gotthold Max Eisenstein,他于1850年发表的论文使得这个结果闻名于世，不过德国数学家 Theodor Schonemann于1846年发表过同样的结果",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691853c90ec18.png",
+                problems: [
+                    { name: "2008-中国国家队选拔考试-第17题", url: "https://artofproblemsolving.com/community/c6h199121p1095025" }
+                        ],
+                articles: [
+                    { name: "Eisenstein原始论文", url: "https://easylink.cc/5t19ua" },
+                    { name: "关于有理系数多项式不可约的Eisenstein判别法", url: "https://zhuanlan.zhihu.com/p/339208387" },
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Aczel不等式",
+                background: "1956年，加拿大数学家Aczel在研究单变量函数方程时提出了这个不等式",
+                content: "该不等式又被称为反向Cauchy不等式",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69185f4447802.png",
+                problems: [
+                    { name: "2020-中国东南地区数学奥林匹克-第12题", url: "https://artofproblemsolving.com/community/c6h2222533p17022613" },
+                    { name: "2017-中国女子数学奥林匹克-第3题", url:"https://artofproblemsolving.com/community/c6h1495340p8796142"},
+                    { name: "2004-美国国家队选拔考试-第1题", url:"https://artofproblemsolving.com/community/c6h79775p456566"}
+                        ],
+                articles: [
+                    { name: "Aczel原始论文", url: "https://easylink.cc/r2k4ah" },
+                    { name: "Aczel不等式证明个人想法及一些例子", url: "https://zhuanlan.zhihu.com/p/367552984" },
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Ore定理",
+                background: "Ore定理由挪威数学家 Ore 于1960年在论文 Note on Hamilton Circuits中发表，给出了一个图是 Hamiton 圈的充分条件.Gabriel Andrew Dirac 于1952年在论文 Some Theorems on Abstract Graphs 也给出过一个充分条件，Ore定理是它的推广",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/69186504acc91.png",
+                problems: [
+                    { name: "2018-保加利亚数学奥林匹克-第6题", url: "https://artofproblemsolving.com/community/c6h1627590p10207214" }
+                        ],
+                articles: [
+                    { name: "Ore原始论文", url: "https://easylink.cc/b1zf9d" },
+                    { name: "Dirac原始论文", url: "https://easylink.cc/ijo2gt" },
+                    {name: "Ore定理的中文数学wiki介绍",url:"https://math.fandom.com/zh/wiki/Ore_%E5%AE%9A%E7%90%86"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Beatty定理",
+                background: "Beatty定理由 Samuel Beatty 于1926年投给美国数学月刊作为问题3173，但在 Lord Rayleigh 于1894年出版的书 The Theory of Sound 中已经出现，后有多次重复发现，故而这一定理也被称作 Beatty-Rayleigh 定理",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691868ea3346c.png",
+                problems: [
+                    { name: "2019-国际数学奥林匹克预选题数论-第6题", url: "https://artofproblemsolving.com/community/c6h2279051p17829382" }
+                        ],
+                articles: [
+                    { name: "Beatty定理解答原始论文", url: "https://easylink.cc/qadfge" },
+                    { name: "定理的证明", url: "https://toby-fish.github.io/2020/11/07/%E6%95%B0%E5%AD%A6-%E8%B4%9D%E8%92%82%E5%AE%9A%E7%90%86/" },
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Berge定理",
+                background: "Berge定理给出一个匹配是最大匹配的充要条件，有法国数学家 Claude Berge 于 1957 年在论文 Two Theorems in Graph Theory 中提出",
+                content: "设图M是图G的一个匹配，G的一个M-交错路是边交替属于M和不属于M的路.进一步，如果一个M-交错路的起点和重点均不被M覆盖，则称该路是一个M-增广路",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/15/691871b3e6393.png",
+                problems: [
+                    { name: "[信息学竞赛]洛谷P1129[ZJOI2007]矩阵游戏", url: "https://www.luogu.com.cn/problem/P1129" }
+                        ],
+                articles: [
+                    { name: "Beatty定理解答原始论文", url: "https://easylink.cc/qadfge" },
+                    { name: "二部图的匹配问题", url: "https://zobinhuang.github.io/sec_learning/Algorithm/Graph_Theory_16_Match_of_Bipartite/#1.4%20Berge%20%E5%AE%9A%E7%90%86" },
+                    { name: "匈牙利算法",url: "https://zobinhuang.github.io/sec_learning/Algorithm/Graph_Theory_16_Match_of_Bipartite/#1.4%20Berge%20%E5%AE%9A%E7%90%86"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Bertrand假设",
+                background: "Bertrand假设由法国数学家 Joseph Louis Francius Bertrand 于 1845年提出并验证了n较小的清醒.1850年，俄罗斯数学家Chebyshev在论文Memoire sur les nombres premiers中第一个给出证明，因此Bertrand假设也被称为Chebyshev定理.1919年，印度天才数学家Srinivasa Ramanujan在论文 A Proof of Bertrand's Postulate 中给出第一个初等证明.1932年，19岁的天才数学家Erdos在论文 Beweis eines Satzes von Tschebyschef 中改进了证明，这是他的第一篇论文",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691909ed48f93.png",
+                problems: [
+                    { name: "2024-美国数学奥林匹克-第1题", url: "https://artofproblemsolving.com/community/c5h3281035p30216459" },
+                    { name: "2017-罗马尼亚大师杯-第2题", url: "https://artofproblemsolving.com/community/c6h1389628p7743010" },
+                    { name: "2020-国际数学奥林匹克数论预选题-第6题", url: "https://artofproblemsolving.com/community/c6h2625861p22698064" }
+                        ],
+                articles: [
+                    { name: "Chebyshev原始论文", url: "https://easylink.cc/rho7fm" },
+                    { name: "Erdos的初等证明", url: "https://zhuanlan.zhihu.com/p/397365537" },
+                    { name: "解析数论的经典证明",url: "https://andychen2012.blog.uoj.ac/blog/9022"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "波朗杰·藤下定理",
+                background: "波朗杰·藤下定理出现在矢野健太郎的《几何中的著名定理》第7.3节，但这个定理几乎只在中文互联网上出现，且被一些别有用心的教育机构编入“中考常考的几何定理”中",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/6919485522ca1.png",
+                problems: [
+                    
+                        ],
+                articles: [
+                    { name: "波朗杰·藤下定理的证明和有用的推论", url: "https://zhuanlan.zhihu.com/p/402363209" },
+                    { name: "复数法解几何题", url: "https://zhuanlan.zhihu.com/p/557407094" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Bollobas定理",
+                background: "Bollobas定理由 Bela Bollobas 于1965年在论文 On Generalized Graphs为解决一个图论问题而提出.这就是Sperner定理的推广",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691913dd69756.png",
+                problems: [
+                    { name: "2021-第38期新星征解题-第4题", url: "https://download.wezhan.cn/contents/sitefiles2057/10287724/files/539079..pdf?response-content-disposition=inline%3Bfilename%3D%25e6%2596%25b0%25e6%2598%259f%25e9%2597%25ae%25e9%25a2%2598%25e5%25be%2581%25e8%25a7%25a3%25e7%25ac%25ac%25e4%25b8%2589%25e5%258d%2581%25e5%2585%25ab%25e6%259c%259f%25e8%25a7%25a3%25e7%25ad%2594%282021.05%29.pdf&auth_key=1763251384-6fb9df040d0243ce903eadeb3ee8156f-0-86557c0d1b781352c3394e54201a1896" }
+                        ],
+                articles: [
+                    { name: "Bollobas原始论文", url: "https://easylink.cc/vfq3o4" },
+                    { name: "Bollobas定理的证明和相关定理", url: "https://zhuanlan.zhihu.com/p/584076656" }
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Bolzano-Weierstrass列紧性定理(致密性定理)",
+                background: "Bolzano-Weierstrass列紧性定理由波西米亚数学家 Bernard Bolzano 首次提出并公开证明，他的证明包含在著作《函数论》中，但生前并未发表，直到1930才公开.1860年，德国数学家 Karl Weierstrass 重新发现并证明了该定理.该定理揭示了欧式空间上的列紧性",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691916c861d14.png",
+                problems: [
+                    { name: "2024-华东师范大学数学分析I期末考试-第三(8)题", url: "https://zhuanlan.zhihu.com/p/21385842676" },
+                    { name: "2024-浙江大学数学分析I期中考试-第五题",url: "https://zhuanlan.zhihu.com/p/4660980110"},
+                    { name: "2024-南开大学数学分析I期末考试-第四题",url:"https://zhuanlan.zhihu.com/p/16053030711"}
+                        ],
+                articles: [
+                    { name: "Bolzano-Weierstrass列紧性定理(致密性定理)的证明", url: "https://zhuanlan.zhihu.com/p/712509473" },
+                    { name: "与确界原理的等价性", url: "https://zhuanlan.zhihu.com/p/538415091" }
+                        ],
+                category: "analysis"
+            },
+            {
+                title: "Bonferroni不等式",
+                background: "Bonferroni不等式推广了概率论中的Boole不等式，给出了容斥原理的不等式形式.由意大利数学家 Carlo Emilio Bonferroni 于1936年在论文 Teoria Statistica Della Classi e Ca lcolo Delle Probabilita中提出",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69191cba4ddf0.png",
+                problems: [
+                    { name: "1989-国际数学奥林匹克-第6题", url: "https://artofproblemsolving.com/community/c6h62178p372274" }
+                        ],
+                articles: [
+                    { name: "Bonferroni不等式的证明", url: "https://zhuanlan.zhihu.com/p/649714259" },
+                    { name: "Bonferroni不等式在概率论中的应用", url: "https://www.researchgate.net/publication/373452975_Bonferroni_budengshijigailuying_yongBonferroni_inequality_and_its_probability_application" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Bernoulli不等式",
+                background: "Bernoulli不等式由瑞士数学家 Jacob Bernoulli 于1689年在论文 Positions Arithmeticae de Seriebus Infinitis Earumque Summa Finita 中提出.不过根据 Joseph E.Hofmann 于1963年指出的，1668年在 Mesolabum 一书中的第四章已经提出过这一不等式",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69191f2b7031a.png",
+                problems: [
+                    { name: "2017-国际数学奥林匹克代数预选题-第1题", url: "https://artofproblemsolving.com/community/c6h1671272p10632289" },
+                    { name: "2016-罗马尼亚大师杯-第4题", url: "https://artofproblemsolving.com/community/c6h1204702p5942450"},
+                    { name: "2017-中国西部数学奥林匹克-第2题",url:"https://artofproblemsolving.com/community/c6h1495576p8799083"}
+                        ],
+                articles: [
+                    { name: "Bernoulli不等式的证明", url: "https://easylink.cc/iy3xa0" },
+                    { name: "Bernoulli不等式n元形式", url: "https://zhuanlan.zhihu.com/p/33304783" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Brianchon定理",
+                background: "Brianchon定理由法国数学家 Charles-Julian Brianchon 于1806年在论文 Memoire sur les surfaces courbes du second degre 中提出.这是他发表的第一篇论文",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69192d64a063a.png",
+                problems: [
+                    { name: "2021-土耳其国家队选拔考试-第9题", url: "https://artofproblemsolving.com/community/c6h3279869p30201261" },
+                    { name: "2017-国际数学奥林匹克几何预选题-第1题", url: "https://artofproblemsolving.com/community/c6h1671264p10632265"},
+                    { name: "2012-国际数学奥林匹克几何预选题-第7题",url:"https://artofproblemsolving.com/community/c6h546183p3160591"}
+                        ],
+                articles: [
+                    { name: "Brianchon定理的圆锥曲线形式", url: "https://www.zhihu.com/question/579399803" },
+                    { name: "Pascal定理的对偶定理——Brianchon定理", url: "https://zhuanlan.zhihu.com/p/62300472" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Brooks定理",
+                background: "Brooks定理是关于图染色的经典结果，由R.L.Brooks于1941年在论文 On Colouring the Nodes of a Network中发表",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/691931a1d3154.png",
+                problems: [
+                    { name: "2017-北京大学数学夏令营-第4题", url: "https://www.sohu.com/a/164926834_651844" },
+                    {name:"[信息学竞赛]洛谷P2819 图的m着色问题" ,url:"https://www.luogu.com.cn/problem/P2819"}
+                        ],
+                articles: [
+                    { name: "图的着色问题", url: "https://oi-wiki.org/graph/color/" },
+                    { name: "图的着色算法", url: "https://oi-wiki.org/graph/color/#brooks-%E5%AE%9A%E7%90%86" }
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Brocard定理",
+                background: "该定理来源于法国数学家 Henri Brocard",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69194974c89fd.png",
+                problems: [
+                    { name: "2024-国际数学奥林匹克几何预选题-第6题", url: "https://artofproblemsolving.com/community/c6h3610439p35340907" },
+                    {name:"2019-上海新星数学奥林匹克春季赛-第5题" ,url:"https://download.wezhan.cn/contents/sitefiles2057/10287724/files/538959..pdf?response-content-disposition=inline%3Bfilename%3D2019%25e6%2598%25a5%25e5%25ad%25a3%25e4%25b8%258a%25e6%25b5%25b7%25e6%2596%25b0%25e6%2598%259f%25e6%2595%25b0%25e5%25ad%25a6%25e5%25a5%25a5%25e6%259e%2597%25e5%258c%25b9%25e5%2585%258b%28NSMO%29%25e8%25af%2595%25e9%25a2%2598%25e8%25a7%25a3%25e6%259e%2590-%25e5%2590%25b4%25e5%25b0%2589%25e8%25bf%259f%25e7%25bd%2597%25e6%258c%25af%25e5%258d%258e%25e9%259f%25a9%25e6%2596%25b0%25e6%25b7%25bc%25e5%2586%25b7%25e5%25b2%2597%25e6%259d%25be.pdf&auth_key=1763265392-bb470979a6c74b97a2af2ef1a6b78b8b-0-27c4064dc0385ee139dbc52ac5e3cdb7"},
+                    { name:"2010-全国高中数学联合竞赛-加试第1题·",ur:"https://artofproblemsolving.com/community/c6h463313p2597601"}
+                        ],
+                articles: [
+                    { name: "完全四边形", url: "https://zhuanlan.zhihu.com/p/601604450" },
+                    { name: "Brocard定理的证明", url: "https://www.zhihu.com/question/300455892/answer/1125754321" }
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Carleman不等式",
+                background: "Carleman不等式由瑞典数学家 Torsten Carleman 于1923年在论文 Sur les fonctions quasi-analytiques中提出",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/16/69194dfa59819.png",
+                problems: [
+                    { name: "2015-中国国家队选拔考试-第8题", url: "https://artofproblemsolving.com/community/c6h1064458p4619006" }
+                        ],
+                articles: [
+                    { name: "Carleman不等式的证明", url: "https://zhuanlan.zhihu.com/p/389442229" },
+                    { name: "积分形式", url: "https://zhuanlan.zhihu.com/p/146394663" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Carlson不等式",
+                background: "Carlson不等式由瑞典数学家 Fritz David Carlson 于 1934年在论文 Une inegalite中提出. Carlson 的原证明用的是解析函数的方法. G.H.Hardy 在1936年在论文 A Note on Two Inequalities中给出了两种相对初等的做法，一种用来Cauchy不等式，一种用来Fourier级数",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b00d960363.png",
+                problems: [
+                    
+                        ],
+                articles: [
+                    { name: "Hardy原始论文", url: "https://easylink.cc/hvitth" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Caro-Wei定理",
+                background: "Caro-Wei定理给出一个图的最大独立集大小的一个下届，由Yair Caro 于1979年在报告New Results on the independ ence number 以及 V.K.Wei于1981年在技术北方路A lower bound on the stability number of a simple graph中分别独立提出",
+                content: "图G中若干互不相邻的顶点组成的集合称为G的独立集，独立集合的元素个数记作α(G)",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b0efcad702.png",
+                problems: [
+                    { name:"2012-国际数学奥林匹克组合预选题-第7题",url : "https://artofproblemsolving.com/community/c6h546174p3160574"},
+                    { name:"[信息学竞赛]洛谷P12371[模板]最大团/最大独立集",url:"https://www.luogu.com.cn/problem/P12371"}
+                        ],
+                articles: [
+                    { name: "Caro-Wei定理的推广(arXiv预印本仅作参考)", url: "https://arxiv.org/abs/2403.17568" },
+                    { name:"上海交通大学约翰-霍普克罗夫特计算机科学中心的讲稿",url :"https://jhc.sjtu.edu.cn/~kuanyang/teaching/CS3334/notes/lec05.pdf"},
+                    {name:"随机图论",url:"https://tantaiqianer.github.io/mathematics/graph-theory/random-graph/"}
+                        ],
+                category: "combinatorics"
+            },
+            {
+                title: "Cayley-Hamilton定理",
+                background: "Cayley-Hamilton定理由爱尔兰数学家William Rowan Hamilton和英国数学家Arthur Cayley共同提出，它说明任何一个方阵适合于于它的特征方程.Hamilton在著作 Lectures on Quaternions中设计了线性变换满足其特征多项式的问题，而Cayley则在18581年的一篇文章中对n=3验证了这个定理",
+                content: "拓扑上看就是可对角化方阵在所有方阵中稠密",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b1356576e4.png",
+                problems: [
+                    { name:"复旦大学高等代数每周一题[问题2023S06]",url : "https://www.cnblogs.com/torsor/p/17154080.html"},
+                    { name:"[信息学竞赛]洛谷P10775[BZOJ4162]shlw loves matrix II",url:"https://www.luogu.com.cn/problem/P10775"}
+                        ],
+                articles: [
+                    { name: "Cayley-Hamilton定理的证明", url: "https://zhuanlan.zhihu.com/p/7745376929" },
+                    { name:"在信息学中的应用",url :"https://oiwiki.org/math/linear-algebra/char-poly/"}
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Chevalley-Warning定理",
+                background: "1935年，Emil Artin猜想对于有限域上的多元多项式组的零点集合，可能会有好的结论，他把这个问题交给自己的学生Ewald Warning去做.这个时候 Claude Chevalley 来到 Gottingen 访问，随后在论文 Demonstration d'une hypothese de M.Artin中证明了这个定理.之后在同一年，Warning在论文 Bemerkung zur vorstehenden Arbeit von Herm Chevalley中改进了定理的结果",
+                content: "它告诉我们如果一个方程未知数足够多，那么只要平凡解，就一定有非平凡解，这个推论在中学数学竞赛中更加有用",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b18b8d715a.png",
+                problems: [
+                    { name:"2003-国际数学奥林匹克数论预选题-第8题",url : "https://artofproblemsolving.com/community/c6h17633p119994"}
+                        ],
+                articles: [
+                    { name: "Warning原始论文", url: "https://easylink.cc/7gm0n0" },
+                    { name:"Chevalley原始论文",url :"https://easylink.cc/2ee3ub"},
+                    { name:"有限域理论上的应用",url:"https://zhuanlan.zhihu.com/p/623295706"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Cohn判别法",
+                background: "Cohn判别法得名来源于德国数学家Arthur Cohn，最早见于Polya和Szego于1925年出版的明珠 Problems and theorems in analysis第二卷问题128.1981年，John Brilliant,Michael Filaseta和Anderw Odlyzko在论文 On an Irreducibility Theorem of A.Cohn中将底数推广位一般的b",
+                content: "",
+                contentImage: "https://youke1.picui.cn/s1/2025/11/17/691b1dc1c1383.png",
+                problems: [
+                    { name:"2010-中国东南地区数学奥林匹克-第1题",url : "https://artofproblemsolving.com/community/c6h375152p2070435"},
+                        ],
+                articles: [
+                    { name: "Brillhart-Filaseta-Odlyzko原始论文", url: "https://easylink.cc/5dy8io" },
+                    { name:"Cohn判别法的普适性(但不适合作为计算机算法)",url :"hhttps://mathworld.wolfram.com/Berlekamp-ZassenhausAlgorithm.html"}
+                        ],
+                category: "number-theory"
+            },
+                        {
+                title: "Descartes符号法则",
+                background: "Descartes符号法则是笛卡尔在1637年在 La Geometrie 一书中未加证明的给出的，牛顿于1707年重新提出，但也没有证明.已知最早的证明书hi有法国数学家 Jean-Paul de Gua de Malves 于1740年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/691c74033203f7be0013c3a2.png",
+                problems: [
+                    { name:"2021=北京大学数学科学金秋营-第4题",url : "https://artofproblemsolving.com/community/c6h2701383p23464280"}
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://zhuanlan.zhihu.com/p/161577971" }
+                        ],
+                category: "algebra"
+            },
+            {
+                title: "Descartes圆定理",
+                background: "Descartes符号法则是笛卡尔在1643年在写给 Bohemia 的 Elizabeth 公主的信中指出，但没有完整的证明。之后这个定理被多次发现，Jakob Stener于1826年第一个给出了完整的证明，Thorold Gosset于1937年推广到了高维的情形",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/691d41023203f7be0015c501.png",
+                problems: [
+                    { name:"1995-中国数学奥林匹克-第4题",url : "https://artofproblemsolving.com/community/c6h554096p3219715"}
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://zhuanlan.zhihu.com/p/105819963" },
+                    { name: "笛卡尔定理与一类多圆相切问题",url:"https://easylink.cc/b1z86d"}
+                        ],
+                category: "geometry"
+            },
+            {
+                title: "Dirichlet逼近",
+                background: "Dirichlet逼近有德国数学家Dirichlet于1842年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692213733203f7be002239bc.png",
+                problems: [
+                    { name:"2007-中国西部数学奥林匹克-第4题",url : "https://artofproblemsolving.com/community/c6h175290p968468"}
+                        ],
+                articles: [
+                    { name: "无理数的有理数逼近", url: "https://zhuanlan.zhihu.com/p/537341163" },
+                    { name: "和Zeta函数的零点间距的关系",url:"https://zhuanlan.zhihu.com/p/367101494"}
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Dirichlet定理",
+                background: "Dirichlet定理的特殊情形(a=1)由Euler于1775年证明，更一般的情况由 Legendre 在证明二次互反率的时候提出，由德国数学家 Peter Gustav Lejeune Dirichlet 于1837年首次证明，但第一个初等证明是Selberg给出的",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692215c63203f7be00223c35.png",
+                problems: [
+                    { name:"2023-全国高中数学联合竞赛-加试第二题",url : "https://artofproblemsolving.com/community/c6h3152921p28644021"},
+                    { name:"2019-罗马尼亚大师杯-第6题",url : "https://artofproblemsolving.com/community/c6h1790450p11841786"}
+                        ],
+                articles: [
+                    { name: "利用示性函数-Dirichlet的证明", url: "https://zhuanlan.zhihu.com/p/57379991" }
+                        ],
+                category: "number-theory"
+            },
+            {
+                title: "Desargue定理",
+                background: "Desargue定理是摄影几何中的重要定理",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692218423203f7be00223eef.png",
+                problems: [
+                    { name:"2023-第11届学而思数学竞赛-加试第一题",url : "https://artofproblemsolving.com/community/c6h3014154p27078254"},
+                    { name:"2016-罗马尼亚大师杯-第1题",url : "https://artofproblemsolving.com/community/c6h1204356p5938850"}
+                        ],
+                articles: [
+                    { name: "笛沙格定理的多种证明方法", url: "https://zhuanlan.zhihu.com/p/1922056073059242030" },
+                    { name: "帕斯卡几何",url:"https://www.cnblogs.com/edward-bian/p/15832559.html"}
+                        ],
+                category:"geometry"
+            },
+            {
+                title: "Droz-Farny定理",
+                background: "Droz-Farny定理由瑞士数学家 Arnold Droz-Farny 于1899年发表在 The Educational Time 问题14111，但没有给出证明，第一个几何证明由 Jean-Loui Ayme 于2004年发表在杂志 Forum Geometricorum",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221a7f3203f7be00224156.png",
+                problems: [
+                    { name:"2015-伊朗几何奥林匹克高级组-第3题",url : "https://artofproblemsolving.com/community/c6h3014154p27078254"},
+                    { name:"2016-罗马尼亚大师杯-第1题",url : "https://artofproblemsolving.com/community/c6h1204356p5938850"}
+                        ],
+                articles: [
+                    { name: "Droz-Farny Theorem", url: "https://mathworld.wolfram.com/Droz-FarnyTheorem.html" },
+                    { name: "一片来自美国竞赛教练Titu的小文章",url:"https://geometry.ru/articles/DFdemystified.pdf"}
+                        ],
+                category:"geometry"
+            },
+            {
+                title: "Hermite恒等式",
+                background: "Hermite恒等式是关于高斯函数的一个恒等式，有法国数学家 Hermite 于1884年提出",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221cc63203f7be002243d1.png",
+                problems: [
+                        ],
+                articles: [
+                    { name: "定理的证明", url: "https://www.zhihu.com/question/66001660" }
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Gauss二次互反率",
+                background: "Gauss二次互反率由 Euler 于1783年提出，由Gauss于1798年第一个给出完整的证明，这个定理至今已经有超过两百种证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/69221e053203f7be0022452c.png",
+                problems: [
+                    {name:"2010-美国国家队选拔考试-第9题",url:"https://artofproblemsolving.com/community/c6h358783p1960094"}
+                        ],
+                articles: [
+                    { name: "模p球面点数和高斯和", url: "https://zhuanlan.zhihu.com/p/564529711" },
+                    { name:"西北大学学报-关于高斯和的一个新的恒等式", url:"https://xdxbzk.nwu.edu.cn/zh/article/doi/10.16152/j.cnki.xdxbzr.2023-03-012/"},
+                    { name:"二次互反率的一系列证明",uel:"https://zhuanlan.zhihu.com/p/661226930"}
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Erdos-Gallai定理",
+                background: "Erdos-Gallai定理给出了简单如的度序列的判定方法，由Erdos和Gallai于1960年发表",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/692220bb3203f7be0022481c.png",
+                problems: [
+                    {name:"2021-北京大学数学科学金秋营-第8题",url:"https://artofproblemsolving.com/community/c6h2701441p23464574"},
+                    {name:"[信息学竞赛]POJ1695 Frogs' Neighborhood",url :"https://cloud.tencent.com/developer/article/1087330"}
+                        ],
+                articles: [
+                    { name: "Erdos-Gallai定理与Havel算法", url: "https://blog.nowcoder.net/n/190e37e3bb7f4aba83795e32a7f5a446" },
+                    { name:"图的度数序列相关定理", url:"https://www.luogu.com.cn/article/650j3djq"}
+                        ],
+                category:"combinatorics"
+            },
+            {
+                title: "Erdos-Ginzbueg-Ziv定理",
+                background: "Erdos-Ginzbueg-Ziv定理由 P.Erdos,A.Ginzbueg,A.Ziv 于1961年在论文 Theorm in the Additive Number theory联合给出证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/6922a2cc3203f7be0023a8df.png",
+                problems: [
+                    {name:"2021-第43期数学新星征解答-第4题",url:"https://download.wezhan.cn/contents/sitefiles2057/10287724/files/539136..pdf?response-content-disposition=inline%3Bfilename%3D%25e6%2595%25b0%25e5%25ad%25a6%25e6%2596%25b0%25e6%2598%259f%25e9%2597%25ae%25e9%25a2%2598%25e5%25be%2581%25e8%25a7%25a3%25e7%25ac%25ac%25e5%259b%259b%25e5%258d%2581%25e4%25b8%2589%25e6%259c%259f%25e8%25a7%25a3%25e7%25ad%2594%282022.04%29.pdf&auth_key=1763877816-7f60e677c89d48ec90464afa7b0e6e2b-0-6bdd21e6b82d10e08fe718d884207b6a"},
+                    {name:"2022-中国国家队选拔考试-第2题",url :"https://artofproblemsolving.com/community/c6h2808541p24771605"}
+                        ],
+                articles: [
+                    { name: "Erdos-Ginzburg-Ziv原始论文.pdf", url: "https://easylink.cc/du3tf5" },
+                    { name:"定理的证明与注记", url:"https://www.bananaspace.org/wiki/Erd%C5%91s%E2%80%93Ginzburg%E2%80%93Ziv_%E5%AE%9A%E7%90%86"},
+                    { name:"一些其他的证明",url:"https://zhuanlan.zhihu.com/p/501183534"},
+                    { name:"南京大学数学科学学院的小讲稿",url:"http://maths.nju.edu.cn/~zwsun/40z.pdf"}
+                        ],
+                category:"number-theory"
+            },
+            {
+                title: "Erdos-Ko-Rado定理",
+                background: "Erdos-Ko-Rado定理是极值组合的一个中心结果，它给出了一个香蕉r-族的最大可能基数，由Erdos，Rado，柯召于1961年提出，在1972年 Gyula O.H.Katona简化了证明",
+                content: "",
+                contentImage: "https://pic1.imgdb.cn/item/6922a8d53203f7be0023adcc.png",
+                problems: [
+                    {name:"2021-第43期数学新星征解答-第4题",url:"https://artofproblemsolving.com/community/c6h3499858p33997551"},
+                    {name:"2018-伊朗国家队选拔考试-第17题",url :"https://artofproblemsolving.com/community/c6h1629935p10229072"}
+                        ],
+                articles: [
+                    { name: "证明", url: "https://zhuanlan.zhihu.com/p/364788056" }
+                        ],
+                category:"number-theory"
+            }
+        ];
+
+        // 类别标签映射
+        const categoryTags = {
+            geometry: "几何",
+            algebra: "代数",
+            "number-theory": "数论",
+            analysis: "分析",
+            combinatorics: "组合"
+        };
+
+        // 类别样式映射
+        const categoryStyles = {
+            geometry: "category-geometry",
+            algebra: "category-algebra",
+            "number-theory": "category-number-theory",
+            analysis: "category-analysis",
+            combinatorics: "category-combinatorics"
+        };
+
+        // 渲染定理卡片
+        function renderTheorems() {
+            const container = document.getElementById('theorem-container');
+            container.innerHTML = '';
+            
+            theorems.forEach(theorem => {
+                const card = document.createElement('div');
+                card.className = 'theorem-card mb-4 overflow-hidden';
+                card.setAttribute('data-category', theorem.category); // 存储类别信息
+                
+                // 类别标签
+                const categoryLabel = `
+                    <span class="category-tag ${categoryStyles[theorem.category]}">
+                        ${categoryTags[theorem.category]}
+                    </span>
+                `;
+                
+                card.innerHTML = `
+                    <div class="theorem-header p-4 flex justify-between items-center" 
+                         onclick="toggleCard(this)">
+                        <h2 class="text-xl font-bold">${theorem.title}${categoryLabel}</h2>
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="h-5 w-5 text-gray-500" 
+                             fill="none" 
+                             viewBox="0 0 24 24" 
+                             stroke="currentColor">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    
+                    <div class="theorem-content">
+                        <div class="p-6 bg-gray-50 border-t border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- 左栏 -->
+                                <div>
+                                    <!-- 定理背景 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-blue-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M9 12h6m-6 4h6m2-8h3a2 2 0 012 2v5.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h3" />
+                                            </svg>
+                                            定理背景
+                                        </h3>
+                                        <p class="text-gray-700">${theorem.background}</p>
+                                    </div>
+                                    
+                                    <!-- 定理内容 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-green-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M14 10l-2 1m0 0l-2-1m2 1v8M6 10l2 1m0 0l2-1m-2 1v8M2 10l2 1m0 0l2-1m-2 1v8" />
+                                            </svg>
+                                            定理内容
+                                        </h3>
+                                        <div class="bg-white p-4 rounded-lg ">
+                                            <div class="latex-display">${theorem.content}</div>
+                                            <img src="${theorem.contentImage}" 
+                                                 alt="${theorem.title}内容" 
+                                                 class="mt-4 w-full h-auto rounded-md border border-gray-200">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 右栏 -->
+                                <div>
+                                    <!-- 相关题目 -->
+                                    <div class="mb-6">
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-purple-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M9 5h6m-6 4h6m2 8h3a2 2 0 012 2v5.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h3" />
+                                            </svg>
+                                            相关题目
+                                        </h3>
+                                        <div class="space-y-2">
+                                            ${theorem.problems.map(problem => `
+                                                <a href="${problem.url}" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer"
+                                                   class="flex items-center text-blue-600 hover:text-blue-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                                         class="h-4 w-4 mr-2" 
+                                                         fill="none" 
+                                                         viewBox="0 0 24 24" 
+                                                         stroke="currentColor">
+                                                        <path stroke-linecap="round" 
+                                                              stroke-linejoin="round" 
+                                                              stroke-width="2" 
+                                                              d="M13.828 13.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    ${problem.name}
+                                                </a>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 相关文章 -->
+                                    <div>
+                                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                 class="h-5 w-5 mr-2 text-pink-500" 
+                                                 fill="none" 
+                                                 viewBox="0 0 24 24" 
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round" 
+                                                      stroke-linejoin="round" 
+                                                      stroke-width="2" 
+                                                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
+                                            相关文章与信息
+                                        </h3>
+                                        <div class="space-y-2">
+                                            ${theorem.articles.map(article => `
+                                                <a href="${article.url}" 
+                                                   target="_blank" 
+                                                   rel="noopener noreferrer"
+                                                   class="flex items-center text-purple-600 hover:text-purple-800">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                                         class="h-4 w-4 mr-2" 
+                                                         fill="none" 
+                                                         viewBox="0 0 24 24" 
+                                                         stroke="currentColor">
+                                                        <path stroke-linecap="round" 
+                                                              stroke-linejoin="round" 
+                                                              stroke-width="2" 
+                                                              d="M13.828 13.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    ${article.name}
+                                                </a>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 切换卡片展开/折叠状态
+        function toggleCard(header) {
+            const content = header.nextElementSibling;
+            const isExpanded = content.classList.contains('active');
+            
+           /* // 关闭其他卡片
+            document.querySelectorAll('.theorem-content').forEach(el => {
+                if (el !== content && el.classList.contains('active')) {
+                    el.classList.remove('active');
+                    el.previousElementSibling.querySelector('svg').setAttribute('d', 'M19 9l-7 7-7-7');
+                }
+            });*/
+            
+            // 切换当前卡片状态
+            content.classList.toggle('active', !isExpanded);
+            const svg = header.querySelector('svg');
+            if (isExpanded) {
+                svg.setAttribute('d', 'M19 9l-7 7-7-7');
+            } else {
+                svg.setAttribute('d', 'M5 12l7-7 7 7');
+            }
+        }
+
+        // 搜索和筛选功能
+        function filterTheorems() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value;
+            const cards = document.querySelectorAll('.theorem-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.theorem-header h2').textContent.toLowerCase();
+                const cardCategory = card.dataset.category; // 直接从data属性获取类别
+                
+                const matchesSearch = title.includes(searchTerm);
+                const matchesCategory = (category === 'all' || cardCategory === category);
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTheorems();
+            
+            // 添加搜索事件监听
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterTheorems);
+            
+            // 添加类别筛选事件监听
+            const categoryFilter = document.getElementById('category-filter');
+            categoryFilter.addEventListener('change', filterTheorems);
+            
+            // 初始化logo
+            const logo = document.getElementById('logo');
+            logo.onload = function() {
+                // 可以在这里添加logo加载完成后的处理
+            };
+        });
+    </script>
+</body>
+</html>
