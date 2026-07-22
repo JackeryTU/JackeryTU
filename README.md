@@ -7,15 +7,16 @@
 
 <br>
 
-<!-- 个人链接：知乎 / B站 / 邮箱 -->
-[![Zhihu](https://img.shields.io/badge/-知乎-0084FF?style=for-the-badge&logo=zhihu&logoColor=white)](https://www.zhihu.com/people/yi-yi-yi-4-60-26)
-[![Bilibili](https://img.shields.io/badge/-Bilibili-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://space.bilibili.com/1990187154)
-[![Email](https://img.shields.io/badge/-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:25303090101@m.fudan.edu.cn)
+<!-- Personal links: Zhihu / Bilibili / Email -->
+[![Zhihu](https://img.shields.io/badge/知乎-月沉Lethe-0084FF?style=for-the-badge&logo=zhihu&logoColor=white)](https://www.zhihu.com/people/yi-yi-yi-4-60-26)
+[![Bilibili](https://img.shields.io/badge/Bilibili-椿咲璃音TsubakiNa-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://space.bilibili.com/1990187154)
+[![Email](https://img.shields.io/badge/Email-25303090101%40m.fudan.edu.cn-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:25303090101@m.fudan.edu.cn)
 
 <br>
 
-<!-- Codeforces 评分徽章 -->
-[![Codeforces](https://cfrating.ihcr.top/?user=JackeryTU)](https://codeforces.com/profile/JackeryTU)
+<!-- Codeforces badge (static, links to profile) -->
+[![Codeforces](https://img.shields.io/badge/Codeforces-JackeryTU-1F8ACB?style=for-the-badge&logo=codeforces&logoColor=white)](https://codeforces.com/profile/JackeryTU)
+
 
 </div>
 
@@ -29,13 +30,13 @@ Now studying Electronic Information Science and Technology at the School of Futu
 
 Interested in the intersection of embedded systems, brain-inspired computing, data science & big data technology, statistics, and deep learning / AI.
 
-> ガタゴト揺れる満員電車 哐当摇晃的满员电车
-> すれ違うのは準急列車 错身而过的是准急列车
-> 輪郭のない雲の 望着没有轮廓的云
-> 表情を探してみる 寻找它的表情
-> 「作者の気持ちを答えなさい」 “请回答作者的心情”
-> いったいなにが正解なんだい？ 正确答案到底是什么？
-> From 結束バンド 《忘れてやらない》
+> ガタゴト揺れる満員電車 哐当摇晃的满员电车 <br>
+> すれ違うのは準急列車 错身而过的是准急列车 <br>
+> 輪郭のない雲の 望着没有轮廓的云 <br>
+> 表情を探してみる 寻找它的表情 <br>
+> 「作者の気持ちを答えなさい」 “请回答作者的心情” <br>
+> いったいなにが正解なんだい？ 正确答案到底是什么？<br>
+> From 結束バンド 《忘れてやらない》<br>
 
 ---
 
