@@ -1,16 +1,65 @@
-## Hi there 👋
+<div align="center">
 
-<!--
-**JackeryTU/JackeryTU** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+# JackeryTU
 
-Here are some ideas to get you started:
+### 复旦大学 · 未来信息创新学院
+*电子信息科学与技术 Electronic Information Science and Technology*
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+<br>
+
+<!-- 个人链接：知乎 / B站 / 邮箱 -->
+[![Zhihu](https://img.shields.io/badge/-知乎-0084FF?style=for-the-badge&logo=zhihu&logoColor=white)](https://www.zhihu.com/people/yi-yi-yi-4-60-26)
+[![Bilibili](https://img.shields.io/badge/-Bilibili-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://space.bilibili.com/1990187154)
+[![Email](https://img.shields.io/badge/-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:25303090101@m.fudan.edu.cn)
+
+<br>
+
+<!-- Codeforces 评分徽章 -->
+[![Codeforces](https://cfrating.ihcr.top/?user=JackeryTU)](https://codeforces.com/profile/JackeryTU)
+
+</div>
+
+
+
+## About
+
+Former competitive math contestant — AMC Top 1%.
+
+Now studying Electronic Information Science and Technology at the School of Future Information Innovation, Fudan University.
+
+Interested in the intersection of embedded systems, brain-inspired computing, data science & big data technology, statistics, and deep learning / AI.
+
+> ガタゴト揺れる満員電車 哐当摇晃的满员电车
+> すれ違うのは準急列車 错身而过的是准急列车
+> 輪郭のない雲の 望着没有轮廓的云
+> 表情を探してみる 寻找它的表情
+> 「作者の気持ちを答えなさい」 “请回答作者的心情”
+> いったいなにが正解なんだい？ 正确答案到底是什么？
+> From 結束バンド 《忘れてやらない》
+
+---
+
+## GitHub Stats
+
+<div align="center">
+
+![Stats](https://github-readme-stats.vercel.app/api?username=JackeryTU&show_icons=true&theme=default)
+![Streak](https://github-readme-streak-stats.herokuapp.com/?user=JackeryTU)
+
+</div>
+
+---
+
+## Skills / Tech Stack
+
+![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![C++](https://img.shields.io/badge/-C++-00599C?style=flat-square&logo=cplusplus&logoColor=white)
+![C](https://img.shields.io/badge/-C-A8B9CC?style=flat-square&logo=c&logoColor=black)
+![MATLAB](https://img.shields.io/badge/-MATLAB-0076A8?style=flat-square&logo=mathworks&logoColor=white)
+![PyTorch](https://img.shields.io/badge/-PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/-TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
+![NumPy](https://img.shields.io/badge/-NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
+![Linux](https://img.shields.io/badge/-Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![STM32](https://img.shields.io/badge/-STM32-03234B?style=flat-square&logo=stmicroelectronics&logoColor=white)
+![Raspberry Pi](https://img.shields.io/badge/-Raspberry%20Pi-C51A4A?style=flat-square&logo=raspberrypi&logoColor=white)
+![LaTeX](https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white)
