@@ -44,7 +44,7 @@ Interested in the intersection of embedded systems, brain-inspired computing, da
 
 <div align="center">
 
-![Stats](https://github-readme-stats.vercel.app/api?username=JackeryTU&show_icons=true&theme=default)
+![Stats](https://github-readme-stats-sigma-five.vercel.app/api?username=JackeryTU&show_icons=true&theme=default)
 ![Streak](https://github-readme-streak-stats.herokuapp.com/?user=JackeryTU)
 
 </div>
@@ -58,7 +58,6 @@ Interested in the intersection of embedded systems, brain-inspired computing, da
 ![C](https://img.shields.io/badge/-C-A8B9CC?style=flat-square&logo=c&logoColor=black)
 ![MATLAB](https://img.shields.io/badge/-MATLAB-0076A8?style=flat-square&logo=mathworks&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/-PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/-TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
 ![NumPy](https://img.shields.io/badge/-NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
 ![Linux](https://img.shields.io/badge/-Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![STM32](https://img.shields.io/badge/-STM32-03234B?style=flat-square&logo=stmicroelectronics&logoColor=white)
