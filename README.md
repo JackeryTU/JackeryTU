@@ -11,12 +11,13 @@
 [![Zhihu](https://img.shields.io/badge/知乎-月沉Lethe-0084FF?style=for-the-badge&logo=zhihu&logoColor=white)](https://www.zhihu.com/people/yi-yi-yi-4-60-26)
 [![Bilibili](https://img.shields.io/badge/Bilibili-椿咲璃音TsubakiNa-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://space.bilibili.com/1990187154)
 [![Email](https://img.shields.io/badge/Email-25303090101%40m.fudan.edu.cn-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:25303090101@m.fudan.edu.cn)
-[![Blog](https://img.shields.io/badge/Blog-jackerytu.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://jackerytu.netlify.app/)
 
 <br>
 
 <!-- Codeforces badge (static, links to profile) -->
 [![Codeforces](https://img.shields.io/badge/Codeforces-JackeryTU-1F8ACB?style=for-the-badge&logo=codeforces&logoColor=white)](https://codeforces.com/profile/JackeryTU)
+[![Blog](https://img.shields.io/badge/Blog-jackerytu.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://jackerytu.netlify.app/)
+
 
 
 </div>
