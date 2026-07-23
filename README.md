@@ -7,10 +7,11 @@
 
 <br>
 
-<!-- Personal links: Zhihu / Bilibili / Email -->
+<!-- Personal links: Zhihu / Bilibili / Email / Blog -->
 [![Zhihu](https://img.shields.io/badge/知乎-月沉Lethe-0084FF?style=for-the-badge&logo=zhihu&logoColor=white)](https://www.zhihu.com/people/yi-yi-yi-4-60-26)
 [![Bilibili](https://img.shields.io/badge/Bilibili-椿咲璃音TsubakiNa-FB7299?style=for-the-badge&logo=bilibili&logoColor=white)](https://space.bilibili.com/1990187154)
 [![Email](https://img.shields.io/badge/Email-25303090101%40m.fudan.edu.cn-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:25303090101@m.fudan.edu.cn)
+[![Blog](https://img.shields.io/badge/Blog-jackerytu.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://jackerytu.netlify.app/)
 
 <br>
 
@@ -34,7 +35,7 @@ Interested in the intersection of embedded systems, brain-inspired computing, da
 > すれ違うのは準急列車 错身而过的是准急列车 <br>
 > 輪郭のない雲の 望着没有轮廓的云 <br>
 > 表情を探してみる 寻找它的表情 <br>
-> 「作者の気持ちを答えなさい」 “请回答作者的心情” <br>
+> 「作者の気持ちを答えなさい」 "请回答作者的心情" <br>
 > いったいなにが正解なんだい？ 正确答案到底是什么？<br>
 > From 結束バンド 《忘れてやらない》<br>
 
