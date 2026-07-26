@@ -16,9 +16,8 @@
 
 <!-- Codeforces badge (static, links to profile) -->
 [![Codeforces](https://img.shields.io/badge/Codeforces-JackeryTU-1F8ACB?style=for-the-badge&logo=codeforces&logoColor=white)](https://codeforces.com/profile/JackeryTU)
-[![Blog](https://img.shields.io/badge/Blog-jackerytu.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://jackerytu.netlify.app/)
-
-
+[![Blog](https://img.shields.io/badge/Blog-jackerytu.github.io-181717?style=for-the-badge&logo=github&logoColor=white)](https://jackerytu.github.io/)
+[![Blog%20Mirror](https://img.shields.io/badge/Mirror-netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://jackerytu.netlify.app/)
 
 </div>
 
