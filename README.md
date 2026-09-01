@@ -3,7 +3,7 @@
 # JackeryTU
 
 ### 复旦大学 · 未来信息创新学院
-*电子信息科学与技术 Electronic Information Science and Technology*
+*School of Future Information Innovation, Fudan University*
 
 <br>
 
